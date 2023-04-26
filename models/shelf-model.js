@@ -6,7 +6,8 @@ const shelfSchema = new Schema({
     type: String,
     required: [true, "Please enter a name for your shelf"],
   },
-  books: [{ type: Schema.Types.ObjectId, ref: "Book" }],
+  description: { type: String },
+  books: [{ type: String }],
   userId: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
