@@ -6,44 +6,49 @@ const Schema = mongoose.Schema;
 //   bookUrl: { type: String, required: true },
 //   bookImg: { type: String, required: true },
 // }
-const bookSchema = new Schema({
-  volumeId: { type: String, required: true },
-  title: string,
-  subtitle: string,
-  authors: [string],
-  publisher: string,
-  publishedDate: string,
-  description: string,
-  industryIdentifiers: [
-    {
-      type: string,
-      identifier: string,
+const bookSchema = new Schema(
+  {
+    volumeId: { $type: String, required: true },
+    title: String,
+    subtitle: String,
+    authors: [String],
+    publisher: String,
+    publishedDate: String,
+    description: String,
+    industryIdentifiers: [
+      {
+        type: String,
+        identifier: String,
+      },
+    ],
+    pageCount: Number,
+    dimensions: {
+      height: String,
+      width: String,
+      thickness: String,
     },
-  ],
-  pageCount: integer,
-  dimensions: {
-    height: string,
-    width: string,
-    thickness: string,
+    printType: String,
+    mainCategory: String,
+    categories: [String],
+    averageRating: Number,
+    ratingsCount: Number,
+    contentVersion: String,
+    imageLinks: {
+      smallThumbnail: String,
+      thumbnail: String,
+      small: String,
+      medium: String,
+      large: String,
+      extraLarge: String,
+    },
+    language: String,
+    previewLink: String,
+    infoLink: String,
+    canonicalVolumeLink: String,
   },
-  printType: string,
-  mainCategory: string,
-  categories: [string],
-  averageRating: double,
-  ratingsCount: integer,
-  contentVersion: string,
-  imageLinks: {
-    smallThumbnail: string,
-    thumbnail: string,
-    small: string,
-    medium: string,
-    large: string,
-    extraLarge: string,
-  },
-  language: string,
-  previewLink: string,
-  infoLink: string,
-  canonicalVolumeLink: string,
-});
+  {
+    typeKey: "$type",
+  }
+);
 
 module.exports = mongoose.model("Book", bookSchema);
