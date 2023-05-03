@@ -67,7 +67,9 @@ const protect = asyncHandler(async (req, res, next) => {
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  const currentUser = await User.findById(decoded.id);
+  const currentUser = await User.findById(decoded.id).populate(
+    "myBooks readBooks favoriteBooks readingNow myShelves"
+  );
 
   if (!currentUser) {
     res.status(401);
