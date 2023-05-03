@@ -8,8 +8,26 @@ const getFavorites = asyncHandler(async (req, res) => {
 
 const saveBook = asyncHandler(async (req, res, next) => {
   console.log(req.body);
-  const book = await Book.create(req.body);
 
+  let book;
+  book = await Book.findOne({ title: req.body.title });
+  if (!book) book = await Book.create(req.body);
+
+  if (!book) {
+    res.status(400);
+    throw new Error("Book not created");
+  }
+
+  const user = req.user;
+
+  if (!user) {
+    res.status(400);
+    throw new Error("User not found");
+  }
+
+  user.myBooks.push(book._id);
+
+  await user.save();
   res.status(200).json({ message: "success", book });
 });
 

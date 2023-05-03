@@ -50,6 +50,35 @@ const createNewUser = asyncHandler(async (req, res, next) => {
   });
 });
 
+const protect = asyncHandler(async (req, res, next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  if (!token) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  const currentUser = await User.findById(decoded.id);
+
+  if (!currentUser) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  req.user = currentUser;
+
+  next();
+});
+
 const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -75,8 +104,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
         favoriteBooks: user.favoriteBooks,
         readingNow: user.readingNow,
         myShelves: user.myShelves,
-        token,
       },
+      token,
     });
   } else {
     res.status(401);
@@ -84,24 +113,4 @@ const loginUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-const isLoggedIn = asyncHandler(async (req, res, next) => {
-  if (req.cookies.jwt) {
-    try {
-      const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
-
-      const currentUser = await User.findById(decoded.id);
-
-      if (!currentUser) {
-        return next();
-      }
-
-      req.user = currentUser;
-      return next();
-    } catch (err) {
-      return next();
-    }
-  }
-  next();
-});
-
-module.exports = { createNewUser, loginUser };
+module.exports = { createNewUser, loginUser, protect };
