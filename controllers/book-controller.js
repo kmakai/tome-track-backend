@@ -24,6 +24,18 @@ const saveBook = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: "success", book });
 });
 
+const deleteBook = asyncHandler(async (req, res, next) => {
+  const { id } = req.body;
+
+  const user = req.user;
+
+  user.myBooks = user.myBooks.filter((book) => book.id !== id);
+
+  await user.save();
+
+  res.status(200).json({ message: "Book deleted" });
+});
+
 // Favorites
 const addFavorite = asyncHandler(async (req, res) => {
   const user = req.user;
@@ -43,7 +55,15 @@ const addFavorite = asyncHandler(async (req, res) => {
 });
 
 const removeFavorite = asyncHandler(async (req, res) => {
-  res.send("remove favorite handler");
+  const { id } = req.body;
+
+  const user = req.user;
+
+  user.favoriteBooks = user.favoriteBooks.filter((book) => book.id !== id);
+
+  await user.save();
+
+  res.status(200).json({ message: "Book removed from favorites" });
 });
 
 // Reading Books
@@ -58,7 +78,17 @@ const addReadingNow = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Book saved to reading now" });
 });
 
-const removeReadingNow = asyncHandler(async (req, res) => {});
+const removeReadingNow = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+
+  const user = req.user;
+
+  user.readingNow = user.readingNow.filter((book) => book.id !== id);
+
+  await user.save();
+
+  res.status(200).json({ message: "Book removed from reading now" });
+});
 
 // Read
 const addRead = asyncHandler(async (req, res) => {
@@ -72,10 +102,25 @@ const addRead = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Book saved to read" });
 });
 
+const removeRead = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+
+  const user = req.user;
+
+  user.readBooks = user.readBooks.filter((book) => book.id !== id);
+
+  await user.save();
+
+  res.status(200).json({ message: "Book removed from read" });
+});
+
 module.exports = {
   saveBook,
+  deleteBook,
   addFavorite,
   removeFavorite,
   addReadingNow,
+  removeReadingNow,
   addRead,
+  removeRead,
 };
