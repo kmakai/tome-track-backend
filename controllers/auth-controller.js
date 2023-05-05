@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user-model");
 const Book = require("../models/book-model");
+const BookShelf = require("../models/shelf-model");
 
 // Generate token
 const generateToken = (id) => {
@@ -85,10 +86,12 @@ const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email }).populate(
-    "myBooks readBooks favoriteBooks readingNow myShelves"
+    "myBooks readBooks favoriteBooks readingNow"
   );
 
-  const books = await Book.find();
+  const myShelves = await BookShelf.find({ userId: user._id }).populate(
+    "books"
+  );
 
   if (user && (await bcrypt.compare(password, user.password))) {
     let token = generateToken(user._id);
@@ -101,11 +104,11 @@ const loginUser = asyncHandler(async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        myBooks: books,
+        myBooks: user.myBooks,
         readBooks: user.readBooks,
         favoriteBooks: user.favoriteBooks,
         readingNow: user.readingNow,
-        myShelves: user.myShelves,
+        myShelves,
       },
       token,
     });

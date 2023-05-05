@@ -13,7 +13,7 @@ const createBookShelf = asyncHandler(async (req, res, next) => {
 
   const bookShelf = await BookShelf.create({
     name,
-    user: user._id,
+    userId: user._id,
     description: req.body.description || "",
   });
 
@@ -29,28 +29,29 @@ const createBookShelf = asyncHandler(async (req, res, next) => {
   res.status(201).json({ message: "Book shelf created", bookShelf });
 });
 
-const getBookShelf = asyncHandler(async (req, res, next) => {
-  const bookShelf = await BookShelf.findById(req.params.id);
+const getBookShelves = asyncHandler(async (req, res, next) => {
+  const shelves = await BookShelf.find().populate("books");
 
-  if (!bookShelf) {
+  if (!shelves) {
     res.status(400);
-    throw new Error("Book shelf not found");
+    throw new Error("you do not have shelves");
   }
 
-  res.status(200).json({ message: "Book shelf found", bookShelf });
+  res.status(200).json({ message: "success", shelves });
 });
 
 const addToBookShelf = asyncHandler(async (req, res, next) => {
-  const bookId = req.body;
+  const { bookId } = req.body;
   const bookShelf = await BookShelf.findById(req.params.id);
-  const book = await Book.findById(bookId);
+  const book = await Book.findOne({ volumeId: bookId });
 
   if (!bookShelf || !book) {
     res.status(400);
     throw new Error("Something went wrong");
   }
 
-  bookShelf.books.push(bookId);
+  console.log(book._id);
+  bookShelf.books.push(book._id);
 
   bookShelf.save();
 
@@ -91,7 +92,7 @@ const deleteBookShelf = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   createBookShelf,
-  getBookShelf,
+  getBookShelves,
   addToBookShelf,
   removeFromBookShelf,
   deleteBookShelf,
