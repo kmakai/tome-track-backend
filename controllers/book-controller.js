@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Book = require("../models/book-model");
+const User = require("../models/user-model");
 
 const saveBook = asyncHandler(async (req, res, next) => {
   let book;
@@ -114,6 +115,50 @@ const removeRead = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Book removed from read" });
 });
 
+const getMyBooks = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate("myBooks");
+
+  if (user) {
+    res.status(200).json({ books: user.myBooks });
+  } else {
+    res.status(400);
+    throw new Error("User not found");
+  }
+});
+
+const getMyFavorites = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate("favoriteBooks");
+
+  if (user) {
+    res.status(200).json({ books: user.favoriteBooks });
+  } else {
+    res.status(400);
+    throw new Error("User not found");
+  }
+});
+
+const getReadBooks = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate("readBooks");
+
+  if (user) {
+    res.status(200).json({ books: user.readBooks });
+  } else {
+    res.status(400);
+    throw new Error("User not found");
+  }
+});
+
+const getReadingNow = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate("readingNow");
+
+  if (user) {
+    res.status(200).json({ books: user.readingNow });
+  } else {
+    res.status(400);
+    throw new Error("User not found");
+  }
+});
+
 module.exports = {
   saveBook,
   deleteBook,
@@ -123,4 +168,8 @@ module.exports = {
   removeReadingNow,
   addRead,
   removeRead,
+  getMyBooks,
+  getMyFavorites,
+  getReadBooks,
+  getReadingNow,
 };

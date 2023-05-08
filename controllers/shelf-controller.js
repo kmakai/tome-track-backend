@@ -59,7 +59,7 @@ const addToBookShelf = asyncHandler(async (req, res, next) => {
 });
 
 const removeFromBookShelf = asyncHandler(async (req, res, next) => {
-  const bookId = req.body;
+  const { bookId } = req.body;
 
   const bookShelf = await BookShelf.findById(req.params.id);
 
@@ -71,6 +71,8 @@ const removeFromBookShelf = asyncHandler(async (req, res, next) => {
   bookShelf.books = bookShelf.books.filter(
     (book) => book.toString() !== bookId
   );
+
+  console.log(bookShelf.books, bookId);
 
   bookShelf.save();
 
@@ -85,7 +87,7 @@ const deleteBookShelf = asyncHandler(async (req, res, next) => {
     throw new Error("Book shelf not found");
   }
 
-  bookShelf.remove();
+  await BookShelf.findByIdAndDelete(req.params.id);
 
   res.status(200).json({ message: "Book shelf deleted" });
 });

@@ -13,7 +13,7 @@ router.post(
   authController.protect,
   shelfController.removeFromBookShelf
 );
-router.post(
+router.delete(
   "/:id/delete",
   authController.protect,
   shelfController.deleteBookShelf

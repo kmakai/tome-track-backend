@@ -10,11 +10,6 @@ const userRefresh = asyncHandler(async (req, res) => {
   }
 });
 
-const getUserById = asyncHandler(async (req, res) => {
-  res.send("book handler");
-});
-
 module.exports = {
-  getUserById,
   userRefresh,
 };
