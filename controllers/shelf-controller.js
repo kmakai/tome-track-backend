@@ -30,7 +30,9 @@ const createBookShelf = asyncHandler(async (req, res, next) => {
 });
 
 const getBookShelves = asyncHandler(async (req, res, next) => {
-  const shelves = await BookShelf.find().populate("books");
+  const shelves = await BookShelf.find({ userId: req.user._id }).populate(
+    "books"
+  );
 
   if (!shelves) {
     res.status(400);
