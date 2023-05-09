@@ -118,4 +118,18 @@ const loginUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = { createNewUser, loginUser, protect };
+const loginGuest = asyncHandler(async (req, res, next) => {
+  const emails = [
+    "test@tometrack.com",
+    "john@tometrack.com",
+    "jane@tometrack.com",
+    "jack@tometrack.com",
+  ];
+  const randomN = Math.floor(Math.random() * (3 - 0 + 1) + 0);
+
+  req.body.email = emails[randomN];
+  req.body.password = "pass1234";
+  next();
+});
+
+module.exports = { createNewUser, loginUser, protect, loginGuest };

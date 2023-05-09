@@ -7,6 +7,7 @@ const bookController = require("../controllers/book-controller");
 
 router.post("/register", authController.createNewUser);
 router.post("/login", authController.loginUser);
+router.post("/guestLogin", authController.loginGuest, authController.loginUser);
 router.get("/refresh", authController.protect, userController.userRefresh);
 router.get("/myBooks", authController.protect, bookController.getMyBooks);
 router.get("/readBooks", authController.protect, bookController.getReadBooks);
