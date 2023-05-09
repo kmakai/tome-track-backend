@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-// {
-//   bookTitle: { type: String, required: true },
-//   bookId: { type: String, required: true },
-//   bookUrl: { type: String, required: true },
-//   bookImg: { type: String, required: true },
-// }
+
 const bookSchema = new Schema(
   {
     volumeId: { $type: String, required: true },
